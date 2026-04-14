@@ -12,13 +12,13 @@ public static class RoleData
             Description = "A trained combatant, skilled with blasters and battlefield tactics.",
             AttributeBonuses = new()
             {
-                [AttributeType.Dexterity] = new DiceCode(0, 2),
-                [AttributeType.Strength] = new DiceCode(0, 1),
+                [AttributeType.Dexterity] = new DiceCode(2),
+                [AttributeType.Strength] = new DiceCode(1),
             },
             SkillBonuses = new()
             {
-                [SkillType.Blasters] = new DiceCode(1),
-                [SkillType.Tactics] = new DiceCode(0, 2),
+                [SkillType.Blasters] = new DiceCode(0, 2),
+                [SkillType.Tactics] = new DiceCode(0, 1),
                 [SkillType.Melee] = new DiceCode(0, 1),
                 [SkillType.Stamina] = new DiceCode(0, 1),
             }
@@ -34,20 +34,39 @@ public static class RoleData
             },
             SkillBonuses = new()
             {
-                [SkillType.Pilot] = new DiceCode(1),
-                [SkillType.Gunnery] = new DiceCode(0, 2),
+                [SkillType.Pilot] = new DiceCode(2),
+                [SkillType.Gunnery] = new DiceCode(0, 1),
                 [SkillType.Astrogation] = new DiceCode(0, 1),
                 [SkillType.Sensors] = new DiceCode(0, 1),
             }
         },
+        
+        new Role
+        {
+            Name = "Doctor",
+            Description = "A saw-bones experienced in healing anything not electronic.",
+            AttributeBonuses = new()
+            {
+                [AttributeType.Knowledge] = new DiceCode(1),
+                [AttributeType.Technical] = new DiceCode(2),
+            },
+            SkillBonuses = new()
+            {
+                [SkillType.Medicine] = new DiceCode(0, 2),
+                [SkillType.Search] = new DiceCode(0, 1),
+                [SkillType.Xenology] = new DiceCode(0, 1),
+                [SkillType.Computers] = new DiceCode(0, 1),
+            }
+        },
+        
         new Role
         {
             Name = "Scoundrel",
             Description = "A smooth-talking rogue who relies on wit, charm, and a fast draw.",
             AttributeBonuses = new()
             {
-                [AttributeType.Perception] = new DiceCode(0, 2),
-                [AttributeType.Dexterity] = new DiceCode(0, 1),
+                [AttributeType.Perception] = new DiceCode(1),
+                [AttributeType.Mechanical] = new DiceCode(2),
             },
             SkillBonuses = new()
             {
@@ -60,20 +79,19 @@ public static class RoleData
         },
         new Role
         {
-            Name = "Technician",
+            Name = "Engineer",
             Description = "A mechanical genius who can fix anything—from hyperdrives to battle droids.",
             AttributeBonuses = new()
             {
-                [AttributeType.Technical] = new DiceCode(0, 2),
-                [AttributeType.Knowledge] = new DiceCode(0, 1),
+                [AttributeType.Technical] = new DiceCode(2),
+                [AttributeType.Knowledge] = new DiceCode(1),
             },
             SkillBonuses = new()
             {
                 [SkillType.Computers] = new DiceCode(0, 2),
-                [SkillType.Droids] = new DiceCode(0, 2),
-                [SkillType.Vehicles] = new DiceCode(0, 2),
+                [SkillType.Droids] = new DiceCode(0, 1),
+                [SkillType.Vehicles] = new DiceCode(0, 1),
                 [SkillType.Armament] = new DiceCode(0, 1),
-                [SkillType.Medicine] = new DiceCode(0, 1),
             }
         },
         new Role
@@ -83,14 +101,15 @@ public static class RoleData
             AttributeBonuses = new()
             {
                 [AttributeType.Force] = new DiceCode(1),
-                [AttributeType.Perception] = new DiceCode(0, 1),
+                [AttributeType.Perception] = new DiceCode(2),
             },
             SkillBonuses = new()
             {
-                [SkillType.Control] = new DiceCode(0, 2),
-                [SkillType.Sense] = new DiceCode(0, 2),
-                [SkillType.Alter] = new DiceCode(0, 2),
-                [SkillType.Willpower] = new DiceCode(0, 1),
+                [SkillType.Control] = new DiceCode(0, 1),
+                [SkillType.Sense] = new DiceCode(0, 1),
+                [SkillType.Alter] = new DiceCode(0, 1),
+                [SkillType.Persuade] = new DiceCode(0, 1),
+                [SkillType.Medicine] = new DiceCode(0, 2),
             }
         },
         new Role

@@ -13,10 +13,10 @@ public static class SpeciesData
             BaseAttributes = new()
             {
                 [AttributeType.Dexterity] = new DiceCode(2),
-                [AttributeType.Knowledge] = new DiceCode(2),
+                [AttributeType.Knowledge] = new DiceCode(1),
                 [AttributeType.Mechanical] = new DiceCode(2),
                 [AttributeType.Perception] = new DiceCode(2),
-                [AttributeType.Strength] = new DiceCode(2),
+                [AttributeType.Strength] = new DiceCode(1),
                 [AttributeType.Technical] = new DiceCode(2),
                 [AttributeType.Force] = new DiceCode(1),
             },
@@ -32,19 +32,36 @@ public static class SpeciesData
             Description = "Feline species known for their empathic abilities and striking appearance. Intuitive and fur ripples with mood.",
             BaseAttributes = new()
             {
-                [AttributeType.Dexterity] = new DiceCode(2),
+                [AttributeType.Dexterity] = new DiceCode(1),
                 [AttributeType.Knowledge] = new DiceCode(2),
-                [AttributeType.Mechanical] = new DiceCode(1, 1),
+                [AttributeType.Mechanical] = new DiceCode(1),
                 [AttributeType.Perception] = new DiceCode(3),
-                [AttributeType.Strength] = new DiceCode(1, 2),
+                [AttributeType.Strength] = new DiceCode(1),
                 [AttributeType.Technical] = new DiceCode(2),
                 [AttributeType.Force] = new DiceCode(0, 1),
             },
             SkillBonuses = new()
             {
-                [SkillType.Persuade] = new DiceCode(0, 2),
-                [SkillType.Deceive] = new DiceCode(0, 1),
-                [SkillType.Sense] = new DiceCode(0, 1),
+                [SkillType.Hide] = new DiceCode(0, 2)
+            }
+        },
+        new Species
+        {
+            Name = "Mon Calamari",
+            Description = "Bipedal cephalapods with blue to brown skin tones and webbed hands.",
+            BaseAttributes = new()
+            {
+                [AttributeType.Dexterity] = new DiceCode(1),
+                [AttributeType.Knowledge] = new DiceCode(2),
+                [AttributeType.Mechanical] = new DiceCode(2),
+                [AttributeType.Perception] = new DiceCode(2),
+                [AttributeType.Strength] = new DiceCode(1),
+                [AttributeType.Technical] = new DiceCode(2),
+                [AttributeType.Force] = new DiceCode(0, 1),
+            },
+            SkillBonuses = new()
+            {
+                [SkillType.Swim] = new DiceCode(0, 2),
             }
         },
         new Species
@@ -54,24 +71,22 @@ public static class SpeciesData
             BaseAttributes = new()
             {
                 [AttributeType.Dexterity] = new DiceCode(2),
-                [AttributeType.Knowledge] = new DiceCode(1, 2),
-                [AttributeType.Mechanical] = new DiceCode(1, 2),
+                [AttributeType.Knowledge] = new DiceCode(1),
+                [AttributeType.Mechanical] = new DiceCode(1),
                 [AttributeType.Perception] = new DiceCode(2),
                 [AttributeType.Strength] = new DiceCode(3),
-                [AttributeType.Technical] = new DiceCode(1, 1),
+                [AttributeType.Technical] = new DiceCode(1),
                 [AttributeType.Force] = new DiceCode(1),
             },
             SkillBonuses = new()
             {
-                [SkillType.Brawl] = new DiceCode(0, 2),
-                [SkillType.Intimidate] = new DiceCode(0, 1),
-                [SkillType.Stamina] = new DiceCode(0, 1),
+                [SkillType.Stamina] = new DiceCode(0, 2),
             }
         },
         new Species
         {
             Name = "Synthoid",
-            Description = "Cybernetic beings—part organic, part machine. Brilliant technicians with enhanced processing ability.",
+            Description = "Cybernetic beings—part organic, part machine. Brilliant technicians with questionable speeder-bikes.",
             BaseAttributes = new()
             {
                 [AttributeType.Dexterity] = new DiceCode(2),
@@ -91,23 +106,40 @@ public static class SpeciesData
         },
         new Species
         {
-            Name = "Zabrak",
-            Description = "Horned humanoids, many featuring facial tattoos.",
+            Name = "Rodian",
+            Description = "Frog-like aliens with spiky, hair-live spines instead of hair.",
             BaseAttributes = new()
             {
-                [AttributeType.Dexterity] = new DiceCode(2),
-                [AttributeType.Knowledge] = new DiceCode(1, 2),
-                [AttributeType.Mechanical] = new DiceCode(2),
+                [AttributeType.Dexterity] = new DiceCode(3),
+                [AttributeType.Knowledge] = new DiceCode(1),
+                [AttributeType.Mechanical] = new DiceCode(1),
                 [AttributeType.Perception] = new DiceCode(2),
-                [AttributeType.Strength] = new DiceCode(2, 1),
-                [AttributeType.Technical] = new DiceCode(2),
+                [AttributeType.Strength] = new DiceCode(2),
+                [AttributeType.Technical] = new DiceCode(1),
                 [AttributeType.Force] = new DiceCode(0, 1),
             },
             SkillBonuses = new()
             {
-                [SkillType.Agility] = new DiceCode(0, 2),
-                [SkillType.Search] = new DiceCode(0, 1),
-                [SkillType.Hide] = new DiceCode(0, 1),
+                [SkillType.Persuade] = new DiceCode(0, 2),
+            }
+        },
+        new Species
+        {
+            Name = "Zabrak",
+            Description = "Horned humanoids, many featuring facial tattoos. Tenacious.",
+            BaseAttributes = new()
+            {
+                [AttributeType.Dexterity] = new DiceCode(2),
+                [AttributeType.Knowledge] = new DiceCode(2),
+                [AttributeType.Mechanical] = new DiceCode(1),
+                [AttributeType.Perception] = new DiceCode(2),
+                [AttributeType.Strength] = new DiceCode(2),
+                [AttributeType.Technical] = new DiceCode(1),
+                [AttributeType.Force] = new DiceCode(0, 1),
+            },
+            SkillBonuses = new()
+            {
+                [SkillType.Willpower] = new DiceCode(0, 2),
             }
         },
         new Species
@@ -132,7 +164,7 @@ public static class SpeciesData
         },
         new Species
         {
-            Name = "Draelith",
+            Name = "Green-Ones",
             Description = "Ancient species deeply connected to the cosmic Force. Physically frail but extraordinarily gifted in the unseen arts.",
             BaseAttributes = new()
             {
