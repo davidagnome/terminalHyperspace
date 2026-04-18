@@ -26,10 +26,17 @@ public class Location
     
     public string TerritoryName { get; set; } = "";
 
+    /// <summary>When Hot or Cold, the player must be in a vehicle or wearing armor with the corresponding trait.</summary>
     public Climate Climate { get; set; } = Climate.Normal;
 
     /// <summary>When true, the player must be aboard a vehicle (land or space) to enter.</summary>
     public bool RequiresVehicle { get; set; } = false;
+
+    /// <summary>True when this location represents in-system space (as opposed to deep space / hyperspace).</summary>
+    public bool IsSystemSpace { get; set; } = false;
+
+    /// <summary>Galactic hyperspace coordinates for this location, e.g. [0, 0].</summary>
+    public int[] HyperspaceCoordinates { get; set; } = new[] { 0, 0 };
 }
 
 public static class LocationData
@@ -43,7 +50,7 @@ public static class LocationData
             Id = "cantina",
             Name = "Bucket of Bolts Cantina",
             Description = "A dim, seedy cantina on the edge of Mos Espa. The air is thick with smoke from a dozen alien imbibing pipes and drinks. A rodian band plays jizz music -- and not well.",
-            Exits = new() { ["north"] = "market", ["east"] = "docking_bay", ["south"] = "alley" },
+            Exits = new() { ["north"] = "market", ["east"] = "tatooine_docking_bay", ["south"] = "alley" },
             PossibleEncounters = new() { NPCData.PirateThugs, NPCData.BountyHunter },
             EncounterChance = 0.2,
             AmbientMessages = new()
@@ -66,7 +73,7 @@ public static class LocationData
             Id = "market",
             Name = "Mos Espa Market District",
             Description = "A bustling open-air bazaar crammed between durasteel bulkheads. Vendors hawk everything from reprocessed ration packs to suspiciously pristine military hardware. Holographic signs flicker in a dozen languages.",
-            Exits = new() { ["south"] = "cantina", ["east"] = "hangar", ["north"] = "upper_district" },
+            Exits = new() { ["south"] = "cantina", ["east"] = "tatooine_hangar", ["north"] = "upper_district" },
             PossibleEncounters = new() { NPCData.PirateThugs },
             EncounterChance = 0.15,
             HasShop = true,
@@ -84,12 +91,12 @@ public static class LocationData
             Climate = Climate.Normal
         };
 
-        world["docking_bay"] = new Location
+        world["tatooine_docking_bay"] = new Location
         {
-            Id = "docking_bay",
+            Id = "tatooine_docking_bay",
             Name = "Docking Bay 7",
             Description = "A cavernous docking bay where ships of all sizes rest on scarred landing pads. Fuel lines snake across the floor like mechanical vines. Maintenance droids whir and beep as they tend to battered hulls.",
-            Exits = new() { ["west"] = "cantina", ["north"] = "hangar", ["up"] = "orbit" },
+            Exits = new() { ["west"] = "cantina", ["north"] = "tatooine_hangar", ["up"] = "tatooine_orbit" },
             PossibleEncounters = new() { NPCData.Stormtrooper, NPCData.BountyHunter },
             EncounterChance = 0.25,
             HasVehicleShop = true,
@@ -173,12 +180,12 @@ public static class LocationData
             Climate = Climate.Normal
         };
 
-        world["hangar"] = new Location
+        world["tatooine_hangar"] = new Location
         {
-            Id = "hangar",
-            Name = "Private Hangar Bay",
+            Id = "tatooine_hangar",
+            Name = "Mos Espa Private Hangar Bay",
             Description = "A smaller, more exclusive hangar reserved for those with credits or connections. Ships here are sleeker, better maintained. Armed guards watch the entrances.",
-            Exits = new() { ["south"] = "docking_bay", ["west"] = "market", ["up"] = "orbit", ["east"] = "beggars_canyon" },
+            Exits = new() { ["south"] = "tatooine_docking_bay", ["west"] = "market", ["up"] = "tatooine_orbit", ["east"] = "beggars_canyon" },
             PossibleEncounters = new() { NPCData.ImperialOfficer, NPCData.BountyHunter },
             EncounterChance = 0.2,
             HasVehicleShop = true,
@@ -198,7 +205,7 @@ public static class LocationData
         world["upper_district"] = new Location
         {
             Id = "upper_district",
-            Name = "Upper District",
+            Name = "Mos Espa Upper District",
             Description = "The polished upper level of Mos Espa, where the wealthy and powerful conduct their affairs. Clean corridors, functioning lights, and the faint scent of something almost floral. The contrast with below is stark.",
             Exits = new() { ["south"] = "market", ["east"] = "command" },
             PossibleEncounters = new() { NPCData.ImperialOfficer },
@@ -221,7 +228,7 @@ public static class LocationData
         world["command"] = new Location
         {
             Id = "command",
-            Name = "Station Command Center",
+            Name = "Mos Espa Imperial Station Command Center",
             Description = "The nerve center of the Imperial Regiment at Mos Espa. Massive viewscreens display system-wide sensor data, shipping routes, and Imperial patrol patterns. Officers and technicians bustle between consoles.",
             Exits = new() { ["west"] = "upper_district" },
             PossibleEncounters = new() { NPCData.ImperialOfficer, NPCData.Stormtrooper, NPCData.Stormtrooper },
@@ -239,13 +246,13 @@ public static class LocationData
             Climate = Climate.Normal
         };
 
-        world["orbit"] = new Location
+        world["tatooine_orbit"] = new Location
         {
-            Id = "orbit",
+            Id = "tatooine_orbit",
             Name = "Tatooine Orbit",
             Description = "The cold void of space stretches endlessly around you. Tatooine, a glittering web of lights against the dark planet surface. Ships drift in and out of traffic lanes. The nearest star paints everything in pale gold.",
             IsSpace = true,
-            Exits = new() { ["dock"] = "docking_bay", ["land"] = "hangar", ["jump"] = "deep_space" },
+            Exits = new() { ["dock"] = "tatooine_docking_bay", ["land"] = "tatooine_hangar", ["jump"] = "deep_space" },
             PossibleEncounters = new() { NPCData.BountyHunter },
             EncounterChance = 0.2,
             AmbientMessages = new()
@@ -260,7 +267,9 @@ public static class LocationData
             StarSystemName = "Tatoo System",
             SectorName = "Arkanis Sector",
             TerritoryName = "Outer Rim Territories",
-            Climate = Climate.Normal
+            Climate = Climate.Normal,
+            IsSystemSpace = true,
+            HyperspaceCoordinates = [18, 16]
         };
 
         world["deep_space"] = new Location
@@ -269,7 +278,9 @@ public static class LocationData
             Name = "Deep Space — The Rift Expanse",
             Description = "You've jumped to the edge of the Rift Expanse, a treacherous region of space filled with asteroid fields and navigational hazards. Sensors flicker with ghost readings. Out here, you're on your own.",
             IsSpace = true,
-            Exits = new() { ["jump"] = "orbit", ["explore"] = "derelict" },
+            // `jump` is a sentinel — CommandParser intercepts it here and shows a
+            // numeric menu of in-system space destinations (IsSpace && IsSystemSpace).
+            Exits = new() { ["jump"] = "deep_space", ["explore"] = "derelict" },
             PossibleEncounters = new() { NPCData.BountyHunter, NPCData.PirateThugs },
             EncounterChance = 0.4,
             SpaceEncounters = new() { SpaceEncounterData.PirateInterceptor, SpaceEncounterData.BountyHunterShip, SpaceEncounterData.ImperialGunboat },
@@ -379,7 +390,7 @@ public static class LocationData
             Id = "beggars_canyon",
             Name = "Beggar's Canyon Entrance",
             Description = "The legendary canyon cuts a jagged scar through the Tatooine badlands east of Mos Espa. Towering sandstone walls streaked rust and amber, riddled with overhangs and narrow chicanes that racers call the 'Stone Needle Run.' The air currents here are treacherous; updrafts appear without warning and the canyon floor is littered with the wreckage of vehicles whose pilots misjudged a turn.",
-            Exits = new() { ["west"] = "hangar" },
+            Exits = new() { ["west"] = "tatooine_hangar" },
             PossibleEncounters = new() { NPCData.TuskenRaider, NPCData.TuskenRaider, NPCData.CreatureSmall, NPCData.CreatureLarge },
             EncounterChance = 0.4,
             RequiresVehicle = true,
@@ -420,6 +431,35 @@ public static class LocationData
             TerritoryName = "Outer Rim Territories",
             Climate = Climate.Hot
         };
+        
+        world["rodia_orbit"] = new Location
+        {
+            Id = "rodia_orbit",
+            Name = "Rodia Orbit",
+            Description = "",
+            IsSpace = true,
+            Exits = new() { ["rodia_dock"] = "rodia_docking_bay", ["rodia_land"] = "rodia_hangar", ["jump"] = "deep_space" },
+            PossibleEncounters = new() { NPCData.BountyHunter },
+            EncounterChance = 0.2,
+            AmbientMessages = new()
+            {
+                "A patrol frigate glides past, its running lights blinking methodically.",
+                "A burst of static on the comm—someone's distress signal, quickly silenced.",
+                "The station's defense turrets track a passing freighter, then stand down.",
+            },
+            SpaceEncounters = new() { SpaceEncounterData.ImperialPatrol, SpaceEncounterData.SmugglerFreighter },
+            SpaceEncounterChance = 0.25,
+            PlanetName = "Rodia",
+            StarSystemName = "Tyrius System",
+            SectorName = "Savareen Sector",
+            TerritoryName = "Outer Rim Territories",
+            Climate = Climate.Normal,
+            IsSystemSpace = true,
+            HyperspaceCoordinates = [18, 16]
+        };
+
+        // Note: deep_space uses a numeric `jump` menu (handled in CommandParser)
+        // rather than static exits to in-system space locations.
 
         // Initialize NPC resolve for encounters
         return world;

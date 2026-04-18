@@ -132,7 +132,7 @@ public class CommandParser
     public void Look()
     {
         var loc = _state.CurrentLocation;
-        _term.LocationHeader(loc.Name);
+        _term.LocationHeader(loc.PlanetName+" - "+loc.Name);
         _term.Narrative(loc.Description);
         _term.Exits(loc.Exits.Keys);
 
@@ -160,6 +160,13 @@ public class CommandParser
         {
             _term.Error("Go where? Specify a direction.");
             _term.Exits(_state.CurrentLocation.Exits.Keys);
+            return;
+        }
+
+        // Deep space uses a numeric jump menu grouped by Territory > Sector > Planet.
+        if (direction == "jump" && _state.CurrentLocationId == "deep_space")
+        {
+            JumpFromDeepSpace();
             return;
         }
 
@@ -236,6 +243,109 @@ public class CommandParser
         ApplyClimateEffects();
 
         // Space encounters take priority in IsSpace locations when player is in a ship
+        if (_state.CurrentLocation.IsSpace && _state.Player.InSpaceVehicle)
+            CheckSpaceEncounter();
+
+        CheckEncounter();
+    }
+
+    /// <summary>
+    /// Presents a numeric jump menu from deep_space to every in-system space location
+    /// (IsSpace && IsSystemSpace), grouped by Territory > Sector > Planet.
+    /// </summary>
+    private void JumpFromDeepSpace()
+    {
+        if (_state.Player.SpaceVehicle == null || !_state.Player.InSpaceVehicle)
+        {
+            _term.Error("You need to be aboard a space vehicle to jump to hyperspace.");
+            return;
+        }
+
+        // Gather candidate destinations.
+        var destinations = _state.World.Values
+            .Where(l => l.IsSpace && l.IsSystemSpace && l.Id != "deep_space")
+            .ToList();
+
+        if (destinations.Count == 0)
+        {
+            _term.Error("No known in-system jump points.");
+            return;
+        }
+
+        // Group hierarchically: Territory > Sector > Planet.
+        var grouped = destinations
+            .GroupBy(l => string.IsNullOrWhiteSpace(l.TerritoryName) ? "Unknown Territory" : l.TerritoryName)
+            .OrderBy(g => g.Key)
+            .Select(tg => new
+            {
+                Territory = tg.Key,
+                Sectors = tg
+                    .GroupBy(l => string.IsNullOrWhiteSpace(l.SectorName) ? "Unknown Sector" : l.SectorName)
+                    .OrderBy(sg => sg.Key)
+                    .Select(sg => new
+                    {
+                        Sector = sg.Key,
+                        Planets = sg
+                            .GroupBy(l => string.IsNullOrWhiteSpace(l.PlanetName) ? "Unknown Planet" : l.PlanetName)
+                            .OrderBy(pg => pg.Key)
+                            .ToList()
+                    })
+                    .ToList()
+            })
+            .ToList();
+
+        // Flat list, in the same display order, that maps menu number -> Location.
+        var menu = new List<Location>();
+
+        _term.Divider();
+        _term.Info("═ Hyperspace Jump Destinations ═");
+        foreach (var t in grouped)
+        {
+            _term.Info($"  {t.Territory}");
+            foreach (var s in t.Sectors)
+            {
+                _term.Info($"    {s.Sector}");
+                foreach (var p in s.Planets)
+                {
+                    _term.Info($"      {p.Key}");
+                    foreach (var loc in p.OrderBy(l => l.Name))
+                    {
+                        menu.Add(loc);
+                        var coords = loc.HyperspaceCoordinates is { Length: >= 2 }
+                            ? $"[{loc.HyperspaceCoordinates[0]}, {loc.HyperspaceCoordinates[1]}]"
+                            : "[?, ?]";
+                        _term.Info($"        [{menu.Count}] {loc.Name} {coords}");
+                    }
+                }
+            }
+        }
+        _term.Divider();
+        _term.Prompt($"Select destination [1-{menu.Count}] or 'c' to cancel:");
+
+        var input = _term.ReadInput().Trim().ToLower();
+        if (input == "c" || input == "cancel" || string.IsNullOrEmpty(input))
+        {
+            _term.Narrative("You hold position in deep space.");
+            return;
+        }
+
+        if (!int.TryParse(input, out var choice) || choice < 1 || choice > menu.Count)
+        {
+            _term.Error("Invalid selection. Jump aborted.");
+            return;
+        }
+
+        var dest = menu[choice - 1];
+        _term.Narrative($"Engaging hyperdrive... destination: {dest.Name}.");
+
+        _state.CurrentLocationId = dest.Id;
+        _state.TurnCount++;
+        _state.VisitedLocations.Add(dest.Id);
+
+        Look();
+        ShowAmbient();
+        ApplyClimateEffects();
+
         if (_state.CurrentLocation.IsSpace && _state.Player.InSpaceVehicle)
             CheckSpaceEncounter();
 
