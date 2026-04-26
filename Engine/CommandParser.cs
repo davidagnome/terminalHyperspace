@@ -362,6 +362,17 @@ public class CommandParser
         }
     }
 
+    /// Silent variant: rebuilds and pushes a fresh map snapshot to the GUI
+    /// after every Move/Jump so the always-visible map pane tracks the player.
+    /// No-op when there's no GUI bridge or the new location lacks a planet.
+    private void RefreshMap()
+    {
+        var bridge = UI.GuiBridge.Instance;
+        if (bridge == null) return;
+        var snap = MapBuilder.Build(_state);
+        if (snap != null) bridge.RenderMap(snap);
+    }
+
     public void Look()
     {
         var loc = _state.CurrentLocation;
@@ -475,6 +486,7 @@ public class CommandParser
         ShowAmbient();
         ApplyClimateEffects();
         CheckMissionArrival();
+        RefreshMap();
 
         // Space encounters take priority in IsSpace locations when player is in a ship
         if (_state.CurrentLocation.IsSpace && _state.Player.InSpaceVehicle)
@@ -578,6 +590,7 @@ public class CommandParser
         ShowAmbient();
         ApplyClimateEffects();
         CheckMissionArrival();
+        RefreshMap();
 
         if (_state.CurrentLocation.IsSpace && _state.Player.InSpaceVehicle)
             CheckSpaceEncounter();

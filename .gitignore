@@ -6,3 +6,11 @@
 /Content/.idea
 .DS_Store
 .DS_Store
+.env
+.env
+.env
+/Scripts
+Scripts/package-macos.sh
+Scripts/package-macos.sh
+/Scripts
+.DS_Store

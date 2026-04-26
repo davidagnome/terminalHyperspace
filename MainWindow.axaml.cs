@@ -78,6 +78,7 @@ public partial class MainWindow : Window
         _bridge.OnWrite += OnBridgeWrite;
         _bridge.OnClear += OnBridgeClear;
         _bridge.OnRenderMap += OnBridgeRenderMap;
+        _bridge.OnCharacterUpdate += OnBridgeCharacterUpdate;
 
         Opened += (_, _) =>
         {
@@ -100,34 +101,48 @@ public partial class MainWindow : Window
         };
     }
 
-    private static readonly FontFamily MenuFont =
-        new("avares://TerminalHyperspace/Fonts/DejaVuSansMono.ttf#DejaVu Sans Mono");
-
     private void BuildCommandSidebar()
     {
+        WrapPanel? currentWrap = null;
         foreach (var (label, command) in Commands)
         {
             if (string.IsNullOrEmpty(command))
             {
-                CommandPanel.Children.Add(new TextBlock
+                // Start a new wrap section. The divider is the first child of the
+                // WrapPanel so it sits inline with the buttons that follow it
+                // (and wraps onto its own row only when space runs out).
+                currentWrap = new WrapPanel
+                {
+                    Orientation = Avalonia.Layout.Orientation.Horizontal,
+                    Margin = new Avalonia.Thickness(0, 4, 0, 4)
+                };
+                currentWrap.Children.Add(new TextBlock
                 {
                     Text = label,
                     Foreground = new SolidColorBrush(Color.Parse("#00783A")),
-                    Margin = new Avalonia.Thickness(0, 6, 0, 2),
-                    FontFamily = MenuFont,
-                    FontWeight = FontWeight.Bold
+                    Margin = new Avalonia.Thickness(0, 0, 8, 0),
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    FontFamily = Fonts.MonoBold
                 });
+                CommandPanel.Children.Add(currentWrap);
                 continue;
+            }
+
+            // Defensive: if Commands starts with a button (no leading divider) make sure
+            // we have somewhere to put it.
+            if (currentWrap == null)
+            {
+                currentWrap = new WrapPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+                CommandPanel.Children.Add(currentWrap);
             }
 
             var button = new Button
             {
                 Content = label,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 Padding = new Avalonia.Thickness(8, 4),
-                FontFamily = MenuFont,
-                FontWeight = FontWeight.Bold,
+                Margin = new Avalonia.Thickness(0, 0, 4, 4),
+                FontFamily = Fonts.MonoBold,
                 Foreground = Palette.GreenMidBrush
             };
             button.Click += (_, _) =>
@@ -135,7 +150,7 @@ public partial class MainWindow : Window
                 Submit(command);
                 InputBox.Focus();
             };
-            CommandPanel.Children.Add(button);
+            currentWrap.Children.Add(button);
         }
     }
 
@@ -177,10 +192,60 @@ public partial class MainWindow : Window
     private void OnBridgeRenderMap(MapSnapshot snap)
         => Dispatcher.UIThread.Post(() => DrawMap(snap));
 
-    private void OnCloseMapClick(object? sender, RoutedEventArgs e)
-    {
-        RootGrid.ColumnDefinitions[1].Width = new GridLength(0);
-    }
+    private void OnBridgeCharacterUpdate(CharacterSnapshot snap)
+        => Dispatcher.UIThread.Post(() =>
+        {
+            OvName.Text    = snap.Name;
+            OvSpecies.Text = $"Species: {snap.Species}";
+            OvRole.Text    = $"Role:    {snap.Role}";
+            OvResolve.Text = $"Resolve: {snap.Resolve}/{snap.MaxResolve}";
+            OvCredits.Text = $"Credits: {snap.Credits}";
+            OvTurns.Text   = $"Turns:   {snap.TurnCount}";
+
+            OvInventory.Children.Clear();
+            if (snap.Inventory.Count == 0)
+            {
+                OvInventory.Children.Add(new TextBlock
+                {
+                    Text = "(empty)",
+                    Foreground = new SolidColorBrush(Color.Parse("#666666")),
+                    FontFamily = Fonts.MonoOblique,
+                    FontSize = 12
+                });
+                return;
+            }
+
+            foreach (var entry in snap.Inventory)
+            {
+                var color = entry.IsMissionItem
+                    ? Palette.GoldPollen
+                    : entry.IsEquipped ? Palette.GreenMid : Color.Parse("#DDDDDD");
+
+                var label = entry.Name;
+                if (entry.IsEquipped) label += " ★";
+
+                var tile = new Border
+                {
+                    Background = new SolidColorBrush(Color.Parse("#0F1A22")),
+                    BorderBrush = new SolidColorBrush(Color.Parse("#2A3540")),
+                    BorderThickness = new Avalonia.Thickness(1),
+                    CornerRadius = new Avalonia.CornerRadius(3),
+                    Padding = new Avalonia.Thickness(6, 3),
+                    Margin = new Avalonia.Thickness(0, 0, 4, 4),
+                    Child = new TextBlock
+                    {
+                        Text = label,
+                        Foreground = new SolidColorBrush(color),
+                        FontFamily = Fonts.MonoRegular,
+                        FontSize = 12,
+                        TextWrapping = TextWrapping.NoWrap
+                    }
+                };
+                if (entry.IsMissionItem && !string.IsNullOrEmpty(entry.MissionDestination))
+                    ToolTip.SetTip(tile, $"Deliver to: {entry.MissionDestination}");
+                OvInventory.Children.Add(tile);
+            }
+        });
 
     private const int CellW = 150;
     private const int CellH = 70;
@@ -190,17 +255,9 @@ public partial class MainWindow : Window
 
     private void DrawMap(MapSnapshot snap)
     {
-        // Toggle: if the pane is already open, treat a re-trigger as a close.
-        if (RootGrid.ColumnDefinitions[1].Width.Value > 0)
-        {
-            RootGrid.ColumnDefinitions[1].Width = new GridLength(0);
-            MapCanvas.Children.Clear();
-            return;
-        }
-
+        // Map pane is always visible now; just redraw with the new snapshot.
         MapCanvas.Children.Clear();
         MapTitle.Text = $"Map — {snap.Planet}";
-        RootGrid.ColumnDefinitions[1].Width = new GridLength(420);
 
         if (snap.Rooms.Count == 0) return;
 
@@ -268,9 +325,8 @@ public partial class MainWindow : Window
                 Width = RoomW - 8,
                 Height = RoomH - 4,
                 Foreground = new SolidColorBrush(textColor),
-                FontFamily = MenuFont,
+                FontFamily = r.IsCurrent ? Fonts.MonoBold : Fonts.MonoRegular,
                 FontSize = 14,
-                FontWeight = r.IsCurrent ? FontWeight.Bold : FontWeight.Normal,
                 TextWrapping = TextWrapping.Wrap,
                 TextAlignment = TextAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
@@ -311,9 +367,8 @@ public partial class MainWindow : Window
         {
             Text = text,
             Foreground = new SolidColorBrush(color),
-            FontFamily = MenuFont,
+            FontFamily = bold ? Fonts.MonoBold : Fonts.MonoRegular,
             FontSize = 14,
-            FontWeight = bold ? FontWeight.Bold : FontWeight.Normal,
         };
         Canvas.SetLeft(tb, Pad);
         Canvas.SetTop(tb, y);

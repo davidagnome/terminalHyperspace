@@ -25,7 +25,8 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets/**" />
-    <AvaloniaResource Include="Fonts/DejaVuSansMono.ttf" />
+    <AvaloniaResource Include="Fonts/*.ttf" />
+    <AvaloniaResource Include="Fonts/*.otf" />
   </ItemGroup>
 
   <ItemGroup>

@@ -71,6 +71,7 @@ public static class GameRunner
             term.Blank();
             term.Info("Type 'help' for a list of commands.");
             term.Divider();
+            PushCharacterSnapshot(state);
 
             while (!state.GameOver)
             {
@@ -79,6 +80,7 @@ public static class GameRunner
                 if (string.IsNullOrWhiteSpace(input)) continue;
 
                 parser.ProcessCommand(input);
+                PushCharacterSnapshot(state);
 
                 if (parser.LoadedState != null)
                 {
@@ -172,6 +174,31 @@ public static class GameRunner
             term.Error($"Load failed: {ex.Message}");
             return null;
         }
+    }
+
+    private static void PushCharacterSnapshot(GameState state)
+    {
+        var bridge = UI.GuiBridge.Instance;
+        if (bridge == null) return;
+        var p = state.Player;
+        var inventory = p.Inventory
+            .Select(i => new InventoryEntry(
+                Name: i.Name,
+                IsEquipped: i == p.EquippedWeapon,
+                IsMissionItem: i.IsMissionItem,
+                MissionDestination: i.MissionDestinationName))
+            .ToList();
+        bridge.UpdateCharacter(new CharacterSnapshot(
+            Name: p.Name,
+            Species: p.SpeciesName,
+            Role: p.RoleName,
+            Credits: state.CreditsBalance,
+            TurnCount: state.TurnCount,
+            Resolve: p.CurrentResolve,
+            MaxResolve: p.Resolve,
+            UpgradePoints: state.UpgradePoints,
+            ForcePoints: state.ForcePoints,
+            Inventory: inventory));
     }
 
     private static GameState CreateNewGame(Terminal term)

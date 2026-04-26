@@ -30,10 +30,10 @@ InVehicle=False
 InSpaceVehicle=False
 [GAMESTATE]
 Location=tatooine_espa_cantina
-TurnCount=0
+TurnCount=16
 Credits=100
 EnemiesDefeated=0
-Visited=tatooine_espa_cantina
+Visited=tatooine_espa_cantina,tatooine_espa_market,tatooine_espa_upper_district,tatooine_espa_command,tatooine_espa_hangar
 Cleared=
 UpgradePoints=0
 ForcePoints=0

@@ -43,6 +43,20 @@
       <SolidColorBrush x:Key="GreenBgBrush"         Color="{StaticResource GreenBg}"/>
       <SolidColorBrush x:Key="BlueBgBrush"          Color="{StaticResource BlueBg}"/>
 
+      <!-- Font families — mirrored in UI/Fonts.cs. Keep both in sync. -->
+      <FontFamily x:Key="MonoRegular">avares://TerminalHyperspace/Fonts/DejaVuSansMono.ttf#DejaVu Sans Mono</FontFamily>
+      <FontFamily x:Key="MonoBold">avares://TerminalHyperspace/Fonts/DejaVuSansMono-Bold.ttf#DejaVu Sans Mono</FontFamily>
+      <FontFamily x:Key="MonoOblique">avares://TerminalHyperspace/Fonts/DejaVuSansMono-Oblique.ttf#DejaVu Sans Mono</FontFamily>
+      <FontFamily x:Key="MonoBoldOblique">avares://TerminalHyperspace/Fonts/DejaVuSansMono-BoldOblique.ttf#DejaVu Sans Mono</FontFamily>
+      <FontFamily x:Key="DINishRegular">avares://TerminalHyperspace/Fonts/DINish-Regular.otf#DINish</FontFamily>
+      <FontFamily x:Key="DINishBold">avares://TerminalHyperspace/Fonts/DINish-Bold.otf#DINish</FontFamily>
+      <FontFamily x:Key="DINishItalic">avares://TerminalHyperspace/Fonts/DINish-Italic.otf#DINish</FontFamily>
+      <FontFamily x:Key="DINishBoldItalic">avares://TerminalHyperspace/Fonts/DINish-BoldItalic.otf#DINish</FontFamily>
+      <FontFamily x:Key="DINishCondensedRegular">avares://TerminalHyperspace/Fonts/DINishCondensed-Regular.otf#DINish Condensed</FontFamily>
+      <FontFamily x:Key="DINishCondensedBold">avares://TerminalHyperspace/Fonts/DINishCondensed-Bold.otf#DINish Condensed</FontFamily>
+      <FontFamily x:Key="DINishCondensedItalic">avares://TerminalHyperspace/Fonts/DINishCondensed-Italic.otf#DINish Condensed</FontFamily>
+      <FontFamily x:Key="DINishCondensedBoldItalic">avares://TerminalHyperspace/Fonts/DINishCondensed-BoldItalic.otf#DINish Condensed</FontFamily>
+
       <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
           <SolidColorBrush x:Key="ButtonBackground" Color="#272D2B"/>

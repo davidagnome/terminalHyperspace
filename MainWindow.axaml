@@ -2,76 +2,119 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="TerminalHyperspace.MainWindow"
         Title="Terminal Hyperspace"
-        Width="1180" Height="760"
+        Width="1280" Height="820"
         Background="#06060C"
         Icon="avares://TerminalHyperspace/Assets/logo.png">
-  <Grid Name="RootGrid" ColumnDefinitions="*,0,240" RowDefinitions="*,Auto">
+  <!--
+    2x2 layout (proportional):
+      [0,0] 67% × 67%  Output
+      [0,1] 33% × 67%  Map
+      [1,0] 67% × 33%  Command input + WrapPanel of buttons
+      [1,1] 33% × 33%  Character overview
+  -->
+  <Grid Name="RootGrid" ColumnDefinitions="2*,*" RowDefinitions="2*,*">
 
-    <Border Grid.Row="0" Grid.Column="0" Padding="10" Background="#000010" BorderBrush="#1F1F33" BorderThickness="0,0,1,0">
+    <!-- Output (top-left) -->
+    <Border Grid.Row="0" Grid.Column="0" Padding="10" Background="#000010"
+            BorderBrush="#1F1F33" BorderThickness="0,0,1,1">
       <ScrollViewer Name="OutputScroller" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
         <SelectableTextBlock Name="OutputBlock"
-                             FontFamily="avares://TerminalHyperspace/Fonts/DejaVuSansMono.ttf#DejaVu Sans Mono"
+                             FontFamily="{StaticResource MonoRegular}"
                              FontSize="13"
                              TextWrapping="Wrap"
                              Foreground="#DDDDDD"/>
       </ScrollViewer>
     </Border>
 
+    <!-- Map (top-right) -->
     <Border Grid.Row="0" Grid.Column="1" Padding="0" Background="#22171B"
-            BorderBrush="#1F1F33" BorderThickness="1,0">
+            BorderBrush="#1F1F33" BorderThickness="0,0,0,1">
       <DockPanel>
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Background="#22171B">
-          <TextBlock Grid.Column="0" Name="MapTitle" Text="Map" Margin="10,6"
-                     Foreground="#BF9C5E" FontSize="14" FontWeight="Bold"
-                     FontFamily="avares://TerminalHyperspace/Fonts/DejaVuSansMono.ttf#DejaVu Sans Mono"/>
-          <Button Grid.Column="1" Content="✕" Padding="8,2" Margin="4"
-                  Background="Transparent" BorderThickness="0" Foreground="#AAAAAA"
-                  Click="OnCloseMapClick"/>
-        </Grid>
+        <TextBlock DockPanel.Dock="Top" Name="MapTitle" Text="Map — type 'map' to view"
+                   Margin="10,6" Foreground="#BF9C5E" FontSize="14"
+                   FontFamily="{StaticResource MonoBold}"/>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
           <Canvas Name="MapCanvas" Background="#22171B" Width="600" Height="600"/>
         </ScrollViewer>
       </DockPanel>
     </Border>
 
-    <Border Grid.Row="0" Grid.Column="2" Padding="6" Background="#171D22">
-      <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Name="CommandPanel" Spacing="3"/>
-      </ScrollViewer>
+    <!-- Command input + WrapPanel (bottom-left) -->
+    <Border Grid.Row="1" Grid.Column="0" Padding="0" Background="#171D22"
+            BorderBrush="#1F1F33" BorderThickness="0,0,1,0">
+      <DockPanel>
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" Background="#0A0A14">
+          <TextBlock Grid.Column="0"
+                     Text=" &gt; "
+                     VerticalAlignment="Center"
+                     Foreground="#55FF55"
+                     FontFamily="{StaticResource MonoRegular}"
+                     FontSize="14"/>
+          <TextBox Grid.Column="1"
+                   Name="InputBox"
+                   Background="Transparent"
+                   BorderThickness="1"
+                   BorderBrush="#666666"
+                   Foreground="#EEEEEE"
+                   CaretBrush="#55FF55"
+                   FontFamily="{StaticResource MonoRegular}"
+                   FontSize="14"
+                   KeyDown="OnInputKeyDown">
+            <TextBox.Styles>
+              <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                <Setter Property="BorderBrush" Value="#666666"/>
+              </Style>
+              <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                <Setter Property="BorderBrush" Value="#55FF55"/>
+              </Style>
+            </TextBox.Styles>
+          </TextBox>
+          <Button Grid.Column="2"
+                  Content="Send"
+                  Margin="6,4"
+                  Click="OnSendClick"/>
+        </Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <!--
+            CommandPanel is a vertical StackPanel; BuildCommandSidebar fills it
+            with section TextBlocks alternating with WrapPanels of buttons so
+            each section's commands wrap horizontally on their own row.
+          -->
+          <StackPanel Name="CommandPanel" Spacing="2" Margin="6"/>
+        </ScrollViewer>
+      </DockPanel>
     </Border>
 
-    <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
-          ColumnDefinitions="Auto,*,Auto"
-          Background="#0A0A14">
-      <TextBlock Grid.Column="0"
-                 Text=" &gt; "
-                 VerticalAlignment="Center"
-                 Foreground="#55FF55"
-                 FontFamily="avares://TerminalHyperspace/Fonts/DejaVuSansMono.ttf#DejaVu Sans Mono"
-                 FontSize="14"/>
-      <TextBox Grid.Column="1"
-               Name="InputBox"
-               Background="Transparent"
-               BorderThickness="1"
-               BorderBrush="#666666"
-               Foreground="#EEEEEE"
-               CaretBrush="#55FF55"
-               FontFamily="avares://TerminalHyperspace/Fonts/DejaVuSansMono.ttf#DejaVu Sans Mono"
-               FontSize="14"
-               KeyDown="OnInputKeyDown">
-        <TextBox.Styles>
-          <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
-            <Setter Property="BorderBrush" Value="#666666"/>
-          </Style>
-          <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
-            <Setter Property="BorderBrush" Value="#55FF55"/>
-          </Style>
-        </TextBox.Styles>
-      </TextBox>
-      <Button Grid.Column="2"
-              Content="Send"
-              Margin="6,4"
-              Click="OnSendClick"/>
-    </Grid>
+    <!-- Character overview (bottom-right) -->
+    <Border Grid.Row="1" Grid.Column="1" Padding="10" Background="#171D22">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Spacing="3">
+          <TextBlock Text="openHyperspaceD6"
+                     FontSize="18" Foreground="#FFCA3A"
+                     FontFamily="{StaticResource MonoBold}"
+                     Margin="0,0,0,8"/>
+          <TextBlock Text="Character"
+                     FontSize="14" Foreground="#3C58F6"
+                     FontFamily="{StaticResource MonoBold}"
+                     Margin="0,0,0,4"/>
+          <TextBlock Name="OvName"    Text="—" Foreground="#F7FAFB" FontFamily="{StaticResource MonoRegular}" FontSize="14"/>
+          <TextBlock Name="OvSpecies" Text="" Foreground="#AAAAAA" FontFamily="{StaticResource MonoRegular}" FontSize="14"/>
+          <TextBlock Name="OvRole"    Text="" Foreground="#AAAAAA" FontFamily="{StaticResource MonoRegular}" FontSize="14"/>
+          <TextBlock Name="OvResolve" Text="" Foreground="#FF595E" FontFamily="{StaticResource MonoRegular}" FontSize="14" Margin="0,4,0,0"/>
+          <TextBlock Name="OvCredits" Text="" Foreground="#FFCA3A" FontFamily="{StaticResource MonoRegular}" FontSize="14"/>
+          <TextBlock Name="OvTurns"   Text="" Foreground="#888888" FontFamily="{StaticResource MonoRegular}" FontSize="14"/>
+          <TextBlock Text="Inventory"
+                     FontSize="14" Foreground="#3C58F6"
+                     FontFamily="{StaticResource MonoBold}"
+                     Margin="0,8,0,4"/>
+        </StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <!-- Horizontal WrapPanel = responsive column flow: items pack
+               left-to-right, wrapping into a new row when the pane width
+               can't fit another tile. -->
+          <WrapPanel Name="OvInventory" Orientation="Horizontal"/>
+        </ScrollViewer>
+      </DockPanel>
+    </Border>
   </Grid>
 </Window>
