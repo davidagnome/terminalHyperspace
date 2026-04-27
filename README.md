@@ -5,7 +5,7 @@ openHyperspace is a single-player, multi-user dungeon-like (or MUD-like).
 ## System Requirements and Technical Stack
 - **Platform Neutral**. The game use .NET 10 to deliver a text-forward experience through a desktop app.
 - **.NET 10+ Based**. The dotnet is prebundled with is required to build and/or run the app. A precompiled version is in the /terminalHyperspace/bin/Release/net10.0
-- **Avalonia UI** Uses the Avalonia UI framework, which is licensed under the MIT License Framework. See ![AvaloniaUI.net](https://avaloniaui.net/) for details
+- **Avalonia UI** Uses the Avalonia UI framework, which is licensed under the MIT License Framework. See [AvaloniaUI.net](https://avaloniaui.net/) for details
 
 ## Current Features
 - **Conflict resolution** using D6 + pip pools, i.e. 1D, 1D+1, 1D+2, 2D, etc.
