@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "+NiyJHWXtRs=",
+  "dgSpecHash": "IKX331I1gR0=",
   "success": true,
   "projectFilePath": "/Volumes/Data/Dev/terminalHyperspace/TerminalHyperspace.csproj",
   "expectedPackageFiles": [
@@ -29,9 +29,9 @@
     "/Users/dpeters911/.nuget/packages/skiasharp.nativeassets.webassembly/2.88.8/skiasharp.nativeassets.webassembly.2.88.8.nupkg.sha512",
     "/Users/dpeters911/.nuget/packages/skiasharp.nativeassets.win32/2.88.8/skiasharp.nativeassets.win32.2.88.8.nupkg.sha512",
     "/Users/dpeters911/.nuget/packages/tmds.dbus.protocol/0.92.0/tmds.dbus.protocol.0.92.0.nupkg.sha512",
-    "/Users/dpeters911/.nuget/packages/microsoft.netcore.app.runtime.win-x64/10.0.3/microsoft.netcore.app.runtime.win-x64.10.0.3.nupkg.sha512",
-    "/Users/dpeters911/.nuget/packages/microsoft.aspnetcore.app.runtime.win-x64/10.0.3/microsoft.aspnetcore.app.runtime.win-x64.10.0.3.nupkg.sha512",
-    "/Users/dpeters911/.nuget/packages/microsoft.netcore.app.host.win-x64/10.0.3/microsoft.netcore.app.host.win-x64.10.0.3.nupkg.sha512"
+    "/Users/dpeters911/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/10.0.3/microsoft.netcore.app.runtime.linux-x64.10.0.3.nupkg.sha512",
+    "/Users/dpeters911/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/10.0.3/microsoft.aspnetcore.app.runtime.linux-x64.10.0.3.nupkg.sha512",
+    "/Users/dpeters911/.nuget/packages/microsoft.netcore.app.host.linux-x64/10.0.3/microsoft.netcore.app.host.linux-x64.10.0.3.nupkg.sha512"
   ],
   "logs": []
 }

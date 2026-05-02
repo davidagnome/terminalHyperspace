@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TerminalHyperspace")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bce3922a91792497a9967862e5dae960c4e08b06")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1bb2f3b79fcad47b19070c03c5129268c6065d43")]
 [assembly: System.Reflection.AssemblyProductAttribute("TerminalHyperspace")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TerminalHyperspace")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
